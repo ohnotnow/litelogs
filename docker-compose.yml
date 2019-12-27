@@ -1,0 +1,55 @@
+version: "2.4"
+
+services:
+  backend:
+    build:
+      context: .
+    ports:
+      - '3001:3001'
+      - '12201:12201/udp'
+    environment:
+      - LITELOG_MONGO=mongodb://mongo/litelogs
+      - LITELOG_PORT=12201
+      - LITELOG_IP=0.0.0.0
+      - LITELOG_TTL=2
+      - LITELOG_API_PORT=3001
+      - LITELOG_API_KEY=mysecretkey
+
+  frontend:
+    build:
+      context: frontend/
+      args:
+        VUE_APP_API_KEY: "mysecretkey"
+        VUE_APP_API_SERVER: "http://localhost:3001"
+    ports:
+      - "3002:80"
+    logging:
+      driver: gelf
+      options:
+        gelf-address: udp://host.docker.internal:12201
+
+  # logger:
+  #   image: ubuntu:19.10
+  #   command: /bin/sh -c "while true; do echo 'hello'; sleep 5; done"
+  #   logging:
+  #     driver: gelf
+  #     options:
+  #       gelf-address: udp://host.docker.internal:12201
+
+  mongo:
+    image: mongo:4.0.14
+    ports:
+        - "27017:27017"
+    logging:
+      driver: gelf
+      options:
+        gelf-address: udp://host.docker.internal:12201
+
+  mongoexpress:
+    image: mongo-express:0.49
+    ports:
+        - "8081:8081"
+    logging:
+      driver: gelf
+      options:
+        gelf-address: udp://host.docker.internal:12201
