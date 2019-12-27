@@ -3,6 +3,8 @@
 Litelogs is a _very_ simple log aggregator geared towards docker containers.  It listens for incoming messages in GELF format and stores
 them in MongoDB.  There is a Vuejs web front-end which lets you search the logs via simple strings or regex.
 
+__NOTE:__ This is a very early work-in-progress and should _not_ be used in production.
+
 ![Screenshot of litelogs](./screenshot/litelogs.png)
 
 ## Features
