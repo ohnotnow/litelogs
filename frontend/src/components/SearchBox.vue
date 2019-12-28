@@ -14,10 +14,16 @@
 import axios from 'axios';
 
 export default {
+    props: ['page'],
     data() {
         return {
             query: '',
             error: '',
+        }
+    },
+    watch: {
+        page() {
+            this.search();
         }
     },
     methods: {
@@ -26,11 +32,11 @@ export default {
             if (!this.query) {
                 return;
             }
-            axios.get(process.env.VUE_APP_API_SERVER + '/search?q=' + this.query, {headers: {'X-Auth': process.env.VUE_APP_API_KEY}})
+            axios.get(process.env.VUE_APP_API_SERVER + '/search?q=' + this.query + '&page=' + this.page, {headers: {'X-Auth': process.env.VUE_APP_API_KEY}})
                 .then(res => {
                     this.$emit('searched', res.data)
                 })
-                .catch(function (error) {
+                .catch(error => {
                     if (error.response) {
                         // The request was made and the server responded with a status code
                         // that falls out of the range of 2xx

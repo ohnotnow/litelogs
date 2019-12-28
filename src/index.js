@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const mongoose = require('mongoose');
+const mongoosePaginate = require('mongoose-paginate-v2');
 const pickBy = require('lodash/pickBy');
 const gelfserver = require('graygelf/server')
 const program = require('commander');
@@ -29,6 +30,7 @@ program
   .option('--forward <gelf-server>', 'forward messages to this server', process.env.LITELOG_FORWARD ? process.env.LITELOG_FORWARD : '')
   .option('--api-port <port-number>', 'port for the api server', process.env.LITELOG_API_PORT ? process.env.LITELOG_API_PORT : 3001)
   .option('--api-key <string>', 'The api key to use', process.env.LITELOG_API_KEY ? process.env.LITELOG_API_KEY : Math.random().toString(36).substring(30))
+  .option('--max-results <number', 'Maximum number of results to return in one query', process.env.LITELOG_MAX_RESULTS ? process.env.LITELOG_MAX_RESULTS : 100)
 program.parse(process.argv);
 
 // connect to mongodb
@@ -48,7 +50,7 @@ mongoose.connect(program.mongo, mongoOpts).catch(err => {
 mongoose.connection.on('error', err => {
   console.error('Mongodb error : ' + err);
 });
-const Log = mongoose.model('Log', {
+const logSchema = new mongoose.Schema({
    created_at: { type: Date, default: Date.now, expires: parseFloat(program.ttl) * 60 * 60 },
    host: String,
    short_message: String,
@@ -58,6 +60,8 @@ const Log = mongoose.model('Log', {
    level: Number,
    tags: Object,
 });
+logSchema.plugin(mongoosePaginate);
+const Log = mongoose.model('Logs', logSchema);
 
 // create our GELF server
 const server = gelfserver()
@@ -116,11 +120,18 @@ checkApiKey = function (req, res, next) {
 };
 app.get('/', checkApiKey, (req, res) => res.send(''));
 app.get('/search', checkApiKey, (req, res) => {
+  const pageNumber = req.query.page ? req.query.page : 1;
   const r = new RegExp(req.query.q);
-  Log
-    .find({ "combined_message" : { $regex : r, $options: 'i'} })
-    .sort({ created_at : 'desc' })
-    .exec(function(err, results) {
+  Log.paginate(
+    { "combined_message" : { $regex : r, $options: 'i'} },
+    {page: pageNumber, limit: program.maxResults, sort: { created_at : 'desc' }},
+    (err, results) => {
+      if (err) {
+        console.error(err);
+        res.status(500);
+        res.send(err);
+        return;
+      }
       res.send(results);
     });
 });
