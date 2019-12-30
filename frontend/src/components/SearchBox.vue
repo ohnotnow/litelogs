@@ -5,6 +5,9 @@
         <button @click="search" class="flex-shrink-0 bg-teal-500 hover:bg-teal-700 border-teal-500 hover:border-teal-700 text-sm border-4 text-white py-1 px-2 rounded" type="button">
             Search
         </button>
+        <input class="ml-4 appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" placeholder="Container name..." aria-label="Container name filter" autofocus v-model="container" v-on:keyup.enter="search">
+        <input class="ml-4 appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" placeholder="Image name..." aria-label="Image name filter" autofocus v-model="image" v-on:keyup.enter="search">
+
     </div>
       <p v-text="error"></p>
   </div>
@@ -19,6 +22,8 @@ export default {
         return {
             query: '',
             error: '',
+            container: '',
+            image: '',
         }
     },
     watch: {
@@ -32,7 +37,7 @@ export default {
             if (!this.query) {
                 return;
             }
-            axios.get(process.env.VUE_APP_API_SERVER + '/search?q=' + this.query + '&page=' + this.page, {headers: {'X-Auth': process.env.VUE_APP_API_KEY}})
+            axios.get(process.env.VUE_APP_API_SERVER + '/search?q=' + this.query + '&page=' + this.page + '&container=' + this.container + '&image=' + this.image, {headers: {'X-Auth': process.env.VUE_APP_API_KEY}})
                 .then(res => {
                     this.$emit('searched', res.data)
                 })

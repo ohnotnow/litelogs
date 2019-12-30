@@ -122,8 +122,15 @@ app.get('/', checkApiKey, (req, res) => res.send(''));
 app.get('/search', checkApiKey, (req, res) => {
   const pageNumber = req.query.page ? req.query.page : 1;
   const r = new RegExp(req.query.q);
+  const query = {"combined_message" : { $regex : r, $options: 'i'}};
+  if (req.query.container) {
+    query['tags._container_name'] = { $regex: new RegExp(req.query.container), $options: 'i' };
+  }
+  if (req.query.image) {
+    query['tags._image_name'] = { $regex: new RegExp(req.query.image), $options: 'i' };
+  }
   Log.paginate(
-    { "combined_message" : { $regex : r, $options: 'i'} },
+    query,
     {page: pageNumber, limit: program.maxResults, sort: { created_at : 'desc' }},
     (err, results) => {
       if (err) {
