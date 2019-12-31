@@ -121,13 +121,16 @@ checkApiKey = function (req, res, next) {
 app.get('/', checkApiKey, (req, res) => res.send(''));
 app.get('/search', checkApiKey, (req, res) => {
   const pageNumber = req.query.page ? req.query.page : 1;
-  const r = new RegExp(req.query.q);
+  const r = new RegExp(decodeURIComponent(req.query.q));
   const query = {"combined_message" : { $regex : r, $options: 'i'}};
   if (req.query.container) {
-    query['tags._container_name'] = { $regex: new RegExp(req.query.container), $options: 'i' };
+    query['tags._container_name'] = { $regex: new RegExp(decodeURIComponent(req.query.container)), $options: 'i' };
   }
   if (req.query.image) {
-    query['tags._image_name'] = { $regex: new RegExp(req.query.image), $options: 'i' };
+    query['tags._image_name'] = { $regex: new RegExp(decodeURIComponent(req.query.image)), $options: 'i' };
+  }
+  if (req.query.host) {
+    query['host'] = { $regex: new RegExp(decodeURIComponent(req.query.host)), $options: 'i' };
   }
   Log.paginate(
     query,

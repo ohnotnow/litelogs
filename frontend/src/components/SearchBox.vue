@@ -7,7 +7,7 @@
         </button>
         <input class="ml-4 appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" placeholder="Container name..." aria-label="Container name filter" autofocus v-model="container" v-on:keyup.enter="search">
         <input class="ml-4 appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" placeholder="Image name..." aria-label="Image name filter" autofocus v-model="image" v-on:keyup.enter="search">
-
+        <input class="ml-4 appearance-none bg-transparent border-none w-full text-gray-700 mr-3 py-1 px-2 leading-tight focus:outline-none" type="text" placeholder="Host name..." aria-label="Host name filter" autofocus v-model="host" v-on:keyup.enter="search">
     </div>
       <p v-text="error"></p>
   </div>
@@ -24,6 +24,7 @@ export default {
             error: '',
             container: '',
             image: '',
+            host: '',
         }
     },
     watch: {
@@ -37,7 +38,8 @@ export default {
             if (!this.query) {
                 return;
             }
-            axios.get(process.env.VUE_APP_API_SERVER + '/search?q=' + this.query + '&page=' + this.page + '&container=' + this.container + '&image=' + this.image, {headers: {'X-Auth': process.env.VUE_APP_API_KEY}})
+            const queryString = this.buildQueryString();
+            axios.get(process.env.VUE_APP_API_SERVER + queryString, {headers: {'X-Auth': process.env.VUE_APP_API_KEY}})
                 .then(res => {
                     this.$emit('searched', res.data)
                 })
@@ -56,6 +58,10 @@ export default {
                         this.error = error.message;
                     }
                 });
+        },
+        buildQueryString() {
+            console.log(encodeURIComponent(this.query));
+            return `/search?q=${encodeURIComponent(this.query)}&page=${encodeURIComponent(this.page)}&container=${encodeURIComponent(this.container)}&image=${encodeURIComponent(this.image)}&host=${encodeURIComponent(this.host)}`;
         }
     }
 }
