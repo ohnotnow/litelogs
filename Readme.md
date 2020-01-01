@@ -78,7 +78,7 @@ This will do a regex search for the 'string' and also try to limit the results b
 ```
 GET /search?q=mongodb&container=myamazingapp
 ```
-You can pass an api key via `--api-key` which will then check for an `X-Auth` header on the incoming request with a matching value.
+You can pass an api key when starting the server via `--api-key` which will then check for an `X-Auth` header on the incoming request with a matching value.
 
 ## Metrics
 
