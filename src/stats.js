@@ -11,23 +11,20 @@ exports.totalLogs = new client.Counter({
   help: "Total number of log entries ingested since process started"
 });
 
-exports.hostHistogram = new client.Histogram({
+exports.hostGauge = new client.Gauge({
   name: "logs_per_host",
-  help: "Number of logs for each host since process started",
-  buckets: [0.1, 5, 15, 50, 100, 500],
+  help: "Number of logs for each host since last scrape",
   labelNames: ["host"]
 });
-exports.containerHistogram = new client.Histogram({
-  name: "logs_per_container",
-  help: "Number of logs for each container since process started",
-  buckets: [0.1, 5, 15, 50, 100, 500],
-  labelNames: ["container"]
-});
-exports.imageHistogram = new client.Histogram({
+exports.imageGauge = new client.Gauge({
   name: "logs_per_image",
-  help: "Number of logs for each image since process started",
-  buckets: [0.1, 5, 15, 50, 100, 500],
+  help: "Number of logs for each image since last scrape",
   labelNames: ["image"]
+});
+exports.containerGauge = new client.Gauge({
+  name: "logs_per_container",
+  help: "Number of logs for each container since last scrape",
+  labelNames: ["container"]
 });
 
 exports.totalGelfErrors = new client.Counter({

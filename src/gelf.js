@@ -34,12 +34,9 @@ server.on("message", function(gelf) {
   });
   if (! program.disableMetrics) {
     stats.totalLogs.inc();
-    stats.hostHistogram.observe({ host: logEntry.host }, 1);
-    stats.containerHistogram.observe(
-      { container: logEntry.tags._container_name },
-      1
-    );
-    stats.imageHistogram.observe({ image: logEntry.tags._image_name }, 1);
+    stats.hostGauge.inc({host: logEntry.host});
+    stats.containerGauge.inc({ container: logEntry.tags._container_name });
+    stats.imageGauge.inc({ image: logEntry.tags._image_name }, 1);
   }
 });
 server.on("error", function(gelf) {

@@ -13,6 +13,7 @@ if (program.debug || program.apiDebug) {
   const morgan = require("morgan");
   app.use(morgan("combined"));
 }
+
 checkApiKey = function(req, res, next) {
   if (!req.headers["x-auth"] || req.headers["x-auth"] !== program.apiKey) {
     res.status(401);
