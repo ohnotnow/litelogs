@@ -21,7 +21,7 @@ mongoose.connection.on('error', err => {
 });
 const logSchema = new mongoose.Schema({
    created_at: { type: Date, default: Date.now, expires: parseFloat(program.ttl) * 60 * 60 },
-   host: String,
+   host: { type: String, index: true },
    short_message: String,
    full_message: String,
    combined_message: { type: String, index: true },
@@ -29,6 +29,8 @@ const logSchema = new mongoose.Schema({
    level: Number,
    tags: Object,
 });
+logSchema.index({'tags._container_name': true});
+logSchema.index({'tags._image_name': true});
 logSchema.plugin(mongoosePaginate);
 const Log = mongoose.model('Logs', logSchema);
 
