@@ -45,6 +45,10 @@ After a little while you should have the front-end available at http://localhost
 --forward <gelf-server>      forward messages to this server (default: "")
 --api-port <port-number>     port for the api server (default: 3001)
 --api-key <string>           The api key to use (default: "")
+--disable-metrics            Disable prometheus metrics (default: false)
+--prom-user <string>         Optional basic-auth prometheus user (default: "")
+--prom-pass <string>         Optional basic-auth prometheus password (default: "")
+--max-api-results <number    Maximum number of results to return in one api query (default: 100)
 -h, --help                   output usage information
 ```
 Most options are also available to be set via environment variables :
@@ -56,6 +60,25 @@ Most options are also available to be set via environment variables :
 --user == LITELOG_USER
 --password == LITELOG_PASSWORD
 --forward == LITELOG_FORWARD
---api == LITELOG_API_PORT
+--api-port == LITELOG_API_PORT
 --api-key == LITELOG_API_KEY
+--disable-metrics == LITELOG_DISABLE_METRICS
+--prom-user == LITELOG_PROM_USER
+--prom-pass == LITELOG_PROM_PASS
+--max-api-results == LITELOG_MAX_API_RESULTS
 ```
+
+## API
+
+There is one main API endpoints listening on the API port passed via `--api-port`:
+```
+GET /search?q=string&host=hostname&container=container_name&image=image_name&page=1
+```
+This will do a regex search for the 'string' and also try to limit the results by host, container, image and return the first 'page' of results. Only the `q=string` part is required.  Eg, to search for logs containing 'mongodb' produced by the container 'myamazingapp' :
+```
+GET /search?q=mongodb&container=myamazingapp
+```
+
+## Metrics
+
+By default prometheus-friendly metrics are exposed at a `/metrics` API endpoint on the same port as given by `--api-port`.  You can disable them being gathered/served by passing the `--disable-metrics` option.  You can also pass and optional username & password (`--prom-user`, `--prom-pass`) which will be used to add an HTTP basic auth challenge on the `/metrics` route.
