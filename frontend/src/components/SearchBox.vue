@@ -60,7 +60,6 @@ export default {
                 });
         },
         buildQueryString() {
-            console.log(encodeURIComponent(this.query));
             return `/search?q=${encodeURIComponent(this.query)}&page=${encodeURIComponent(this.page)}&container=${encodeURIComponent(this.container)}&image=${encodeURIComponent(this.image)}&host=${encodeURIComponent(this.host)}`;
         }
     }

@@ -50,7 +50,7 @@ app.get("/search", checkApiKey, (req, res) => {
     query,
     {
       page: pageNumber,
-      limit: program.maxResults,
+      limit: program.maxApiResults,
       sort: { created_at: "desc" }
     },
     (err, results) => {

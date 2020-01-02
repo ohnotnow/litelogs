@@ -16,8 +16,16 @@ __NOTE:__ This is a very early work-in-progress and should _not_ be used in prod
 
 ## Project setup
 ```
+# backend
 npm install
 node src/index.js
+
+# frontend
+cd frontend
+cp .env.example .env # you can change the values in there used to connect to the backend etc
+npm install
+npm run serve # for a live/dev session
+npm run build # to do a production build into ./dist/
 ```
 
 ## Docker demo
@@ -27,7 +35,7 @@ If you have docker-compose available you _should_ be able to run
 ```
 docker-compose up --build
 ```
-After a little while you should have the front-end available at http://localhost:3002/ and a copy of mongo-express running at http://localhost:8081/ if you want to dig into the actual database.
+After a little while you should have the front-end available at http://localhost:3002/ (default username/password is 'admin'/'secret' and a copy of mongo-express running at http://localhost:8081/ if you want to dig into the actual database.
 
 ## Configuration options
 
