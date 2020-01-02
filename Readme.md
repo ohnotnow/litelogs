@@ -47,7 +47,7 @@ After a little while you should have the front-end available at http://localhost
                             "mongodb://localhost:27017/litelogs")
 --port <port-number>         port number to listen on (default: 12201)
 --ip <ip-address>            IP address to bind to (default: "0.0.0.0")
---ttl <hours>                number of hours to retain logs (default: 0.1)
+--ttl <hours>                number of hours to retain logs (default: 672 (4 weeks))
 --user <username>            username for mongodb (default: "")
 --password <password>        password for mongodb (default: "")
 --forward <gelf-server>      forward messages to this server (default: "")
