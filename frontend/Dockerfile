@@ -16,8 +16,11 @@ ARG HT_USER=admin
 ARG HT_PASS=secret
 RUN htpasswd -cb /htpasswd ${HT_USER} ${HT_PASS}
 
-FROM nginx:1.17
+FROM nginx:1.17-alpine
+COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
+COPY ./docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY --from=build /home/node/dist /usr/share/nginx/html/
 COPY --from=htpass /htpasswd /etc/nginx/.htpasswd
-COPY ./nginx/default.conf /etc/nginx/conf.d/default.conf
 HEALTHCHECK CMD curl http://localhost/ || exit 1
+CMD /usr/local/bin/docker-entrypoint.sh
+

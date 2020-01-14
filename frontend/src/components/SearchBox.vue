@@ -25,6 +25,8 @@ export default {
             container: '',
             image: '',
             host: '',
+            apiKey: window.API_KEY ? window.API_KEY : process.env.VUE_APP_API_KEY,
+            apiServer: window.API_SERVER ? window.API_SERVER : process.env.VUE_APP_API_SERVER,
         }
     },
     watch: {
@@ -39,7 +41,7 @@ export default {
                 return;
             }
             const queryString = this.buildQueryString();
-            axios.get(process.env.VUE_APP_API_SERVER + queryString, {headers: {'X-Auth': process.env.VUE_APP_API_KEY}})
+            axios.get(this.apiServer + queryString, {headers: {'X-Auth': this.apiKey}})
                 .then(res => {
                     this.$emit('searched', res.data)
                 })
