@@ -7,6 +7,9 @@ services:
     ports:
       - '3001:3001'
       - '12201:12201/udp'
+    depends_on:
+      mongo:
+        condition: service_healthy
     environment:
       - LITELOG_MONGO=mongodb://mongo/litelogs
       - LITELOG_PORT=12201
@@ -41,6 +44,8 @@ services:
     image: mongo:4.0.14
     ports:
         - "27017:27017"
+    healthcheck:
+      test: echo 'db.stats().ok' | mongo localhost:27017/litelogs --quiet
     logging:
       driver: gelf
       options:
